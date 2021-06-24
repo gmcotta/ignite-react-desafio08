@@ -27,10 +27,11 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
       // TODO REQUIRED, LESS THAN 10 MB AND ACCEPTED FORMATS VALIDATIONS
       required: 'Arquivo obrigatório',
       validate: {
-        lessThan10MB: file =>
-          file.size < 10 * 1024 * 1024 || 'O arquivo deve ser menor que 10MB',
-        acceptedFormats: file =>
-          file.type.match(/image\/(png | jpeg | gif)/i) ||
+        lessThan10MB: files =>
+          files[0].size <= 10 * 1024 * 1024 ||
+          'O arquivo deve ser menor que 10MB',
+        acceptedFormats: files =>
+          files[0].type.match('image/(png|jpeg|gif)') ||
           'Somente são aceitos arquivos PNG, JPEG e GIF',
       },
     },
@@ -89,15 +90,15 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
         return;
       }
       // TODO EXECUTE ASYNC MUTATION
-      mutation.mutateAsync({
+      await mutation.mutateAsync({
         title: String(data.title),
         description: String(data.description),
         url: imageUrl,
       });
       // TODO SHOW SUCCESS TOAST
       toast({
-        title: '',
-        description: '',
+        title: 'Imagem cadastrada',
+        description: 'Sua imagem foi cadastrada com sucesso',
         status: 'success',
         isClosable: true,
       });
@@ -127,7 +128,6 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
           setLocalImageUrl={setLocalImageUrl}
           setError={setError}
           trigger={trigger}
-          name="image"
           // TODO SEND IMAGE ERRORS
           error={errors.image}
           // TODO REGISTER IMAGE INPUT WITH VALIDATIONS
@@ -136,7 +136,6 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
 
         <TextInput
           placeholder="Título da imagem..."
-          name="title"
           // TODO SEND TITLE ERRORS
           error={errors.title}
           // TODO REGISTER TITLE INPUT WITH VALIDATIONS
@@ -145,7 +144,6 @@ export function FormAddImage({ closeModal }: FormAddImageProps): JSX.Element {
 
         <TextInput
           placeholder="Descrição da imagem..."
-          name="description"
           // TODO SEND DESCRIPTION ERRORS
           error={errors.description}
           // TODO REGISTER DESCRIPTION INPUT WITH VALIDATIONS
