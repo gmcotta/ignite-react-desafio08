@@ -33,9 +33,10 @@ export default function Home(): JSX.Element {
     // TODO AXIOS REQUEST WITH PARAM
     async ({ pageParam = null }) => {
       // eslint-disable-next-line no-return-await
-      return await api.get('/api/images', {
+      const { data: responseData } = await api.get('/api/images', {
         params: { after: pageParam },
       });
+      return responseData;
     },
     // TODO GET AND RETURN NEXT PAGE PARAM
     {
@@ -67,8 +68,12 @@ export default function Home(): JSX.Element {
         <CardList cards={formattedData} />
         {/* TODO RENDER LOAD MORE BUTTON IF DATA HAS NEXT PAGE */}
         {hasNextPage && (
-          <Button onClick={() => fetchNextPage()}>
-            {isFetchingNextPage ? 'Carregando...' : 'Carregar mais'}
+          <Button
+            isLoading={isFetchingNextPage}
+            loadingText="Carregando..."
+            onClick={() => fetchNextPage()}
+          >
+            Carregar mais
           </Button>
         )}
       </Box>
